@@ -1,4 +1,5 @@
-MotorPH Payroll Management System (Milestone 2)
+MotorPH Payroll Management System
+
 A Java-based console application designed to automate payroll processing for MotorPH. This system integrates employee data and attendance records to calculate accurate gross and net wages while strictly adhering to Philippine statutory requirements and company-specific attendance policies.
 
 🛠 Features
