@@ -6,7 +6,9 @@ The program serves as a dual-purpose portal. Access is determined at the login g
 
 Administrative Access (payroll_staff / 12345):
 -Unlocks the Payroll Processing Engine.
+
 -Allows for individual ID queries or Bulk Processing of the entire database.
+
 -Generates multi-month reports including gross pay, statutory deductions, and net payouts.
 
 Employee Access (Employee ID / 12345):
