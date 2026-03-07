@@ -84,6 +84,7 @@ public class MotorPHSystem {
             System.out.println("Name: " + emp[1] + ", " + emp[2]);
             System.out.println("ID  : " + emp[0]);
             System.out.println("Position: " + emp[11]);
+            System.out.println("Birthday: " + emp[3]);
         }
     }
 
@@ -181,4 +182,5 @@ public class MotorPHSystem {
     }
 
     static double parse(String v) { return Double.parseDouble(v.replaceAll("[\",]", "")); }
+
 }
