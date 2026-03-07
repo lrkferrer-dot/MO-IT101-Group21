@@ -12,8 +12,8 @@ import java.util.Scanner;
  */
 public class MotorPHSystem {
 
-    static String EMP_DB = "MotorPH_Employee Database.csv";
-    static String ATT_DB = "Attendance Record.csv";
+    static String EMP_DB = "resources/MotorPH_Employee Database.csv";
+    static String ATT_DB = "resources/Attendance Record.csv";
     static DateTimeFormatter TF = DateTimeFormatter.ofPattern("[H:mm][HH:mm][H:mm:ss]");
 
     public static void main(String[] args) {
@@ -175,4 +175,5 @@ public class MotorPHSystem {
         return Double.parseDouble(v.replaceAll("[\",]", "")); 
     }
 }
+
 
