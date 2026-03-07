@@ -151,11 +151,11 @@ public class MotorPHSystem {
             double taxable = basic - (sss + ph + pi);
             double tax = (taxable <= 20832) ? 0 : (taxable <= 33333) ? (taxable - 20833) * 0.20 : 2500 + (taxable - 33333) * 0.25;
 
-            System.out.println("PERIOD: " + Month.of(m).name() + " " + year + " (Rate: P" + hourlyRate + ")");
+            System.out.println("PERIOD: " + Month.of(m).name() + " " + year + " (Rate:" + hourlyRate + ")");
             System.out.printf("   [1st Cutoff 01-15] Hrs: %.2f | Gross: %.2f | Net: %.2f\n", h1, h1*hourlyRate, h1*hourlyRate);
             System.out.printf("   [2nd Cutoff 16-%d] Hrs: %.2f | Gross: %.2f\n", lastDay, h2, h2*hourlyRate);
             System.out.printf("      DEDUCTIONS: SSS:%.2f PH:%.2f PI:%.2f TAX:%.2f\n", sss, ph, pi, tax);
-            System.out.printf("      [NET SALARY PAYOUT]: P%.2f\n", (h2*hourlyRate) - (sss+ph+pi+tax));
+            System.out.printf("      [NET SALARY PAYOUT]: %.2f\n", (h2*hourlyRate) - (sss+ph+pi+tax));
             System.out.println("--------------------------------------------------------------");
         }
     }
@@ -184,4 +184,5 @@ public class MotorPHSystem {
     static double parse(String v) { return Double.parseDouble(v.replaceAll("[\",]", "")); }
 
 }
+
 
