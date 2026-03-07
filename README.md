@@ -1,8 +1,8 @@
 **TEAM DETAILS**
 
-**Blue Aldridge Romulo** (Project Lead & Security): Responsible for the Authentication Gateway and the Dashboard Routing logic. Ensured the system distinguishes between payroll_staff and standard employees.
+**Blue Aldridge Romulo** (Project Lead & Security): Responsible for the Authentication Gateway and the Dashboard Routing logic. Ensured the system distinguishes between payroll staff and standard employees.
 
-**Miguel Fabie** (Database & Data Parsing): Developed the Regex CSV Parser. Ensured that the program reads the employee and attendance files correctly, even when fields contain commas or quotes.
+**Miguel Fabie** (Database & Data Parsing): Developed the Regex CSV Parser. Ensured that the program reads the employee and attendance files correctly.
 
 **Matilda Clarisse Tunguia** (Attendance Engine): Developed the Grace Period & 8-5 Windowing logic. Implemented the time-capping rules and the 10-minute arrival buffer to automate late deductions.
 
