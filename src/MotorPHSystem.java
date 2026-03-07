@@ -10,8 +10,8 @@ import java.util.Scanner;
  * 2. GRACE PERIOD: 08:01-08:10 treated as 08:00. 08:11+ is LATE (Actual time used).
  * 3. LUNCH BREAK: Mandatory 1-hour deduction per day.
  * 4. NET SALARY LOGIC: 
- * - 1st Cutoff (1-15): Gross Payout.
- * - 2nd Cutoff (16-End): Gross Payout minus ALL Monthly Statutory Deductions.
+ * - 1st Cutoff (1-15): Gross & Net Payout.
+ * - 2nd Cutoff (16-End): Gross & Net Payout minus ALL Monthly Statutory Deductions.
  */
 public class MotorPHSystem {
 
@@ -184,3 +184,4 @@ public class MotorPHSystem {
     static double parse(String v) { return Double.parseDouble(v.replaceAll("[\",]", "")); }
 
 }
+
