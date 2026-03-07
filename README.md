@@ -11,6 +11,7 @@
 **Kelvine Ferrer** (Financial Reporter): Designed the 2-Cutoff Payout Logic and the Consolidated Payroll Report. Ensured that deductions are only taken from the second cutoff to maintain accurate net salary disbursements.
 
 **PROJECT DETAILS**
+
 **1. System Access & Authentication**
    
 The program serves as a dual-purpose portal. Access is determined at the login gate:
