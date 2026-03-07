@@ -1,6 +1,6 @@
 
 
-
+**PROJECT DETAILS**
 **1. System Access & Authentication**
    
 The program serves as a dual-purpose portal. Access is determined at the login gate:
@@ -71,5 +71,5 @@ The payroll follows a Two-Cutoff Cycle (Semi-monthly), but statutory obligations
 
 **-Final Result:** The "Net Payout" displayed for the second cutoff is the take-home pay after all legal obligations are settled.
 
-**Project Plan:**
+**PROJECT PLAN:**
 https://docs.google.com/spreadsheets/d/1dX1KMGB9wlETWnv0iz9NB4PCXuAkhBlLnwz2LDf5m4M/edit?usp=sharing
