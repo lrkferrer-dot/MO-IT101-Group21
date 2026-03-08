@@ -28,7 +28,7 @@ The program serves as a dual-purpose portal. Access is determined at the login g
 
 -Unlocks the Profile Viewer.
 
--Displays non-sensitive data: Full Name, Position, Birthday, and Hourly Rate.
+-Displays non-sensitive data: Full Name, ID, Position, & Birthday
 
 -Prevents employees from viewing other staff records or payroll summaries.
 
