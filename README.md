@@ -4,11 +4,11 @@
 
 **Miguel Fabie** (Database & Data Parsing): Developed the Regex CSV Parser. Ensured that the program reads the employee and attendance files correctly.
 
-**Matilda Clarisse Tunguia** (Attendance Engine): Developed the Grace Period & 8-5 Windowing logic. Implemented the time-capping rules and the 10-minute arrival buffer to automate late deductions.
+**Kelvine Ferrer** (Attendance Engine): Developed the Grace Period & 8-5 Windowing logic. Implemented the time-capping rules and the 10-minute arrival buffer to automate late deductions.
 
 **Avie Kaille Pedrera** (Statutory Logic): Programmed the PH Statutory Tiers. Translated the 2024 SSS, PhilHealth, Pag-IBIG, and BIR Tax tables into functional Java code.
 
-**Kelvine Ferrer** (Financial Reporter): Designed the 2-Cutoff Payout Logic and the Consolidated Payroll Report. Ensured that deductions are only taken from the second cutoff to maintain accurate net salary disbursements.
+**Matilda Clarisse Tunguia** (Financial Reporter): Designed the 2-Cutoff Payout Logic and the Consolidated Payroll Report. Ensured that deductions are only taken from the second cutoff to maintain accurate net salary disbursements.
 
 **PROJECT DETAILS**
 
