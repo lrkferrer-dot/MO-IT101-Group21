@@ -81,7 +81,7 @@ public class MotorPHSystem {
             System.out.println("Name: " + data[1].toUpperCase() + ", " + data[2].toUpperCase());
             System.out.println("Employee ID: " + data[0]);
             System.out.println("Position   : " + data[11]);
-            System.out.println("Birthday   : " + data[3]); // Now showing Birthday
+            System.out.println("Birthday   : " + data[3]);
         }
     }
 
@@ -208,4 +208,5 @@ public class MotorPHSystem {
     }
 
 }
+
 
