@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 
 /**
- * MOTORPH PAYROLL SYSTEM - MILESTONE 2
+ * MOTORPH PAYROLL SYSTEM
  * * Logic Highlights:
  * 1. WINDOWING: 08:00-17:00 cap (No unauthorized OT).
  * 2. LATE LOGIC: 10-min grace (08:01-08:10). Exact deduction starting 08:11.
@@ -206,4 +206,5 @@ public class MotorPHSystem {
     static double cleanValue(String val) {
         return Double.parseDouble(val.replaceAll("[\",]", ""));
     }
+
 }
