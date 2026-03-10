@@ -1,0 +1,10 @@
+Monthly Basic Salary,Premium Rate,Monthly Premium
+"10,000",3%,300
+"10,000.01 to 59,999.99",3%,"300 up to 1,800"
+"60,000",3%,"1,800"
+,,
+NOTE: Monthly premium contribution payments are equally shared between the employee and employer.,,
+SAMPLE,,
+Monthly Basic Salary,"25,000",
+3% Premium Rate,750,
+Employee Share (50%),375,
