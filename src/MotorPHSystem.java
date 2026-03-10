@@ -55,15 +55,26 @@ public class MotorPHSystem {
         while (true) {
             System.out.println("\n--- [ADMIN] MASTER PAYROLL PORTAL ---");
             System.out.println("[1] Generate Payroll Report | [2] Logout");
-            if (sc.nextLine().equals("2")) break;
-
-            System.out.print("Enter Target ID (or 'ALL'): ");
-            String id = sc.nextLine();
+            System.out.print("Select: ");
+            String choice = sc.nextLine();
             
-            if (id.equalsIgnoreCase("ALL")) {
-                processEntirePayroll();
-            } else {
-                executePayrollCalculation(id);
+            if (choice.equals("2")) break;
+            
+            if (choice.equals("1")) {
+                System.out.print("Enter Target ID (or 'ALL'): ");
+                String id = sc.nextLine();
+                
+                if (id.equalsIgnoreCase("ALL")) {
+                    processEntirePayroll();
+                } else {
+                    // LOGIC: Check if ID exists before attempting calculation
+                    String[] checkData = findEmployeeData(id);
+                    if (checkData != null) {
+                        executePayrollCalculation(id);
+                    } else {
+                        System.out.println("Employee ID not found. Please try again.");
+                    }
+                }
             }
         }
     }
@@ -208,5 +219,6 @@ public class MotorPHSystem {
     }
 
 }
+
 
 
