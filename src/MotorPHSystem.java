@@ -35,15 +35,19 @@ public class MotorPHSystem {
                 continue;
             }
 
-            if (user.equalsIgnoreCase("payroll_staff")) {
-                runAdminDashboard(sc);
-            } else {
-                String[] employeeRow = findEmployeeData(user);
-                if (employeeRow != null) {
-                    runEmployeeDashboard(employeeRow, sc);
-                } else {
-                    System.out.println("[!] ID not found.");
+            switch (user) {
+                case "payroll_staff" -> runAdminDashboard(sc);
+                case "employee" -> {
+                    System.out.print("Enter your Employee ID to view profile: ");
+                    String empId = sc.nextLine().trim();
+                    String[] employeeRow = findEmployeeData(empId);
+                    if (employeeRow != null) {
+                        runEmployeeDashboard(employeeRow, sc);
+                    } else {
+                        System.out.println("[!] Profile Error: Employee ID not found.");
+                    }
                 }
+                default -> System.out.println("[!] Invalid Username. Use 'admin' or 'employee'.");
             }
         }
     }
