@@ -24,7 +24,7 @@ The program serves as a dual-purpose portal. Access is determined at the login g
 
 -Generates multi-month reports including gross pay, statutory deductions, and net payouts.
 
-**Employee Access (Employee ID / 12345):**
+**Employee Access (employee / 12345):**
 
 -Unlocks the Profile Viewer.
 
