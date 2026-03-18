@@ -1,16 +1,16 @@
 import java.io.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+import java.util.*;
 
 public class MotorPHSystem {
 
-    // --- GLOBAL SETTINGS & BUSINESS RULES ---
+    // --- GLOBAL SETTINGS & CONSTANTS ---
     static final String EMP_DB = "resource/MotorPH_Employee Database.csv";
     static final String ATT_DB = "resource/Attendance Record.csv";
     static final DateTimeFormatter TF = DateTimeFormatter.ofPattern("[H:mm][HH:mm][H:mm:ss]");
     
-    // Time-based constants for easier maintenance
+    // Business Rule Constants 
     static final LocalTime SHIFT_START = LocalTime.of(8, 0);
     static final LocalTime GRACE_PERIOD_END = LocalTime.of(8, 10);
     static final LocalTime SHIFT_END = LocalTime.of(17, 0);
@@ -21,8 +21,7 @@ public class MotorPHSystem {
     }
 
     /**
-     * Entry point for the application. Handles user login and 
-     * redirects to the appropriate dashboard.
+     * Handles system login and user routing.
      */
     static void startSystem() {
         Scanner sc = new Scanner(System.in);
@@ -31,7 +30,6 @@ public class MotorPHSystem {
             System.out.println("      MOTOR PH MANAGEMENT SYSTEM       ");
             System.out.println("========================================");
             
-            // Collect and sanitize login credentials
             System.out.print("Username : "); String user = sc.nextLine().trim().toLowerCase();
             System.out.print("Password : "); String pass = sc.nextLine();
 
@@ -40,7 +38,6 @@ public class MotorPHSystem {
                 continue;
             }
 
-            // Route user based on role
             if (user.equals("payroll_staff")) {
                 runAdminDashboard(sc);
             } else if (user.equals("employee")) {
@@ -54,13 +51,14 @@ public class MotorPHSystem {
                     System.out.println("[!] Error: Employee ID not found.");
                 }
             } else {
-                System.out.println("[!] Invalid Username. Use 'payroll_staff' or 'employee'.");
+                System.out.println("[!] Invalid Username. Please use 'admin' or 'employee'.");
             }
         }
     }
 
     /**
-     * Provides administrative functions such as batch payroll generation.
+     * Provides administrative functions.
+     * PERFORMANCE FIX: Loads attendance ONCE before processing.
      */
     static void runAdminDashboard(Scanner sc) {
         while (true) {
@@ -75,11 +73,14 @@ public class MotorPHSystem {
                 System.out.print("Enter Target ID (or 'ALL'): ");
                 String id = sc.nextLine().trim();
                 
+                // Load data into memory once to resolve performance hit
+                List<String[]> cachedAttendance = loadAttendanceToMemory();
+
                 if (id.equalsIgnoreCase("ALL")) {
-                    processEntirePayroll();
+                    processEntirePayroll(cachedAttendance);
                 } else {
                     if (findEmployeeData(id) != null) {
-                        executePayrollCalculation(id);
+                        executePayrollCalculation(id, cachedAttendance);
                     } else {
                         System.out.println("[!] Invalid ID#, please try again.");
                     }
@@ -89,7 +90,7 @@ public class MotorPHSystem {
     }
 
     /**
-     * Displays personal data for the logged-in employee.
+     * Displays employee profile information.
      */
     static void runEmployeeDashboard(String[] data, Scanner sc) {
         while (true) {
@@ -106,40 +107,52 @@ public class MotorPHSystem {
     }
 
     /**
-     * Scans the attendance database and calculates total hours for a date range.
-     * Applies shift windowing, grace periods, and lunch break deductions.
+     * Loads attendance CSV into memory 
      */
-    static double computeHoursWorked(String id, int month, int year, int startDay, int endDay) {
-        double totalHours = 0;
+    static List<String[]> loadAttendanceToMemory() {
+        List<String[]> allRecords = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(ATT_DB))) {
-            String line; br.readLine(); 
+            String line; 
+            br.readLine(); 
             while ((line = br.readLine()) != null) {
-                String[] row = line.split(",");
-                String[] dParts = row[3].split("/");
-                int m = Integer.parseInt(dParts[0]), d = Integer.parseInt(dParts[1]), y = Integer.parseInt(dParts[2]);
-
-                // Filter for matching employee and date criteria
-                if (row[0].equals(id) && m == month && y == year && d >= startDay && d <= endDay) {
-                    LocalTime in = LocalTime.parse(row[4], TF);
-                    LocalTime out = LocalTime.parse(row[5], TF);
-
-                    // Standardize time within 8:00 AM - 5:00 PM shift
-                    if (in.isBefore(SHIFT_START)) in = SHIFT_START;
-                    if (out.isAfter(SHIFT_END)) out = SHIFT_END;
-                    
-                    // Apply 10-minute grace period at start of shift
-                    if (!in.isAfter(GRACE_PERIOD_END)) in = SHIFT_START;
-
-                    // Subtract 1 hour for lunch break
-                    double daily = (Duration.between(in, out).toMinutes() / 60.0) - LUNCH_BREAK_HOUR;
-                    totalHours += Math.max(0, daily);
-                }
+                allRecords.add(line.split(","));
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println("[!] Error: Attendance file not found in resource folder.");
+        }
+        return allRecords;
+    }
+
+    /**
+     * Calculates hours worked using the in-memory attendance list.
+     */
+    static double computeHoursWorked(String id, int month, int year, int startDay, int endDay, List<String[]> attendanceData) {
+        double totalHours = 0;
+        for (String[] row : attendanceData) {
+            String[] dParts = row[3].split("/");
+            int m = Integer.parseInt(dParts[0]), d = Integer.parseInt(dParts[1]), y = Integer.parseInt(dParts[2]);
+
+            if (row[0].equals(id) && m == month && y == year && d >= startDay && d <= endDay) {
+                LocalTime in = LocalTime.parse(row[4], TF);
+                LocalTime out = LocalTime.parse(row[5], TF);
+
+                // Apply Shift Windowing & Grace Period
+                if (in.isBefore(SHIFT_START)) in = SHIFT_START;
+                if (out.isAfter(SHIFT_END)) out = SHIFT_END;
+                if (!in.isAfter(GRACE_PERIOD_END)) in = SHIFT_START;
+
+                double daily = (Duration.between(in, out).toMinutes() / 60.0) - LUNCH_BREAK_HOUR;
+                totalHours += Math.max(0, daily);
+            }
+        }
         return totalHours;
     }
 
-    static void executePayrollCalculation(String id) {
+    /**
+     * Payroll Execution.
+     * 1st Cutoff = Gross. 2nd Cutoff = Gross minus itemized deductions.
+     */
+    static void executePayrollCalculation(String id, List<String[]> attendanceData) {
         String[] emp = findEmployeeData(id);
         if (emp == null) return;
 
@@ -154,76 +167,74 @@ public class MotorPHSystem {
         for (int m = 6; m <= 12; m++) {
             int lastDay = YearMonth.of(2024, m).lengthOfMonth();
             
-            double h1 = computeHoursWorked(id, m, 2024, 1, 15);
-            double h2 = computeHoursWorked(id, m, 2024, 16, lastDay);
+            double h1 = computeHoursWorked(id, m, 2024, 1, 15, attendanceData);
+            double h2 = computeHoursWorked(id, m, 2024, 16, lastDay, attendanceData);
 
             if (h1 + h2 == 0) continue;
 
-            // Statutory Deduction Logic using Ternary Operators (Local Doubles)
+            // Statutory Deduction Logic
             double sss = (basic < 3250) ? 135 : (basic >= 24750) ? 1125 : 157.5 + ((int)((basic - 3250) / 500) * 22.5);
             double ph = (basic <= 10000) ? 150 : (basic >= 60000) ? 900 : (basic * 0.03) / 2;
             double pi = Math.min(100, (basic > 1500) ? 5000 * 0.02 : basic * 0.01);
             
-            // Taxable income and Withholding Tax calculation
             double taxable = basic - (sss + ph + pi);
             double tax = (taxable <= 20832) ? 0 : (taxable <= 33333) ? (taxable - 20833) * 0.20 : 2500 + (taxable - 33333) * 0.25;
-            
             double totalDeductions = sss + ph + pi + tax;
 
             System.out.println("MONTHLY PERIOD: " + Month.of(m).name());
             
-            // 1st Cutoff Display
+            // 1st Cutoff
             System.out.println("   1st Cutoff (1-15)");
             System.out.printf("   Hours Worked: %.2f\n", h1);
-            System.out.printf("   Gross/Net   : %,.2f\n", h1 * hourlyRate);
+            System.out.printf("   Gross Payout: %,.2f\n", h1 * hourlyRate);
             
-            // 2nd Cutoff Display with Itemized Deductions
+            // 2nd Cutoff 
             double gross2 = h2 * hourlyRate;
             System.out.printf("\n   2nd Cutoff (16-%d) \n", lastDay);
             System.out.printf("   Hours Worked        : %.2f\n", h2);
             System.out.printf("   Gross Earnings      : %,.2f\n", gross2);
-            System.out.println("   ------------------------------------");
+            System.out.println("   --- Statutory Deductions ---");
             System.out.printf("   SSS Contribution    : %,.2f\n", sss);
             System.out.printf("   PhilHealth Premium  : %,.2f\n", ph);
             System.out.printf("   Pag-IBIG Fund       : %,.2f\n", pi);
             System.out.printf("   Withholding Tax     : %,.2f\n", tax);
-            System.out.println("   ------------------------------------");
-            System.out.printf("   Total Deductions    : %,.2f\n", totalDeductions);
-            System.out.printf("   [FINAL NET PAYOUT]  : %,.2f\n", gross2 - totalDeductions);
+            System.out.println("   ----------------------------");
+            System.out.printf("   Total Deductions    :  %,.2f\n", totalDeductions);
+            System.out.printf("   [NET PAYOUT]        :  %,.2f\n", gross2 - totalDeductions);
             System.out.println("--------------------------------------------------------------");
         }
     }
 
     /**
-     * Retrieves specific employee data from CSV using regex to handle complex fields.
+     * Reads Employee CSV using Regex to safely handle commas within addresses.
      */
     static String[] findEmployeeData(String id) {
         try (BufferedReader br = new BufferedReader(new FileReader(EMP_DB))) {
             String line; br.readLine();
             while ((line = br.readLine()) != null) {
+                // Regex: Splits by comma ONLY if comma is not inside double quotes
                 String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                if (data[0].equals(id.trim())) return data;
+                if (data[0].trim().equals(id.trim())) return data;
             }
         } catch (Exception e) {}
         return null;
     }
 
     /**
-     * Loops through the entire database to generate a comprehensive company report.
+     * Batch process that uses the cached attendance data for high performance.
      */
-    static void processEntirePayroll() {
-        // PERFORMANCE NOTE: For high-volume production, attendance data 
-        // should be cached in memory to avoid redundant file I/O.
+    static void processEntirePayroll(List<String[]> cachedAttendance) {
         try (BufferedReader br = new BufferedReader(new FileReader(EMP_DB))) {
             String line; br.readLine();
             while ((line = br.readLine()) != null) {
-                executePayrollCalculation(line.split(",")[0]);
+                String empId = line.split(",")[0];
+                executePayrollCalculation(empId, cachedAttendance);
             }
         } catch (Exception e) {}
     }
 
     /**
-     * Removes formatting characters (quotes, commas) from strings to allow parsing.
+     * Sanitizes string values for calculation.
      */
     static double cleanValue(String val) { 
         return Double.parseDouble(val.replaceAll("[\",]", "")); 
