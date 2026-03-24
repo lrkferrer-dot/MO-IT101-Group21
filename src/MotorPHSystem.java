@@ -51,7 +51,7 @@ public class MotorPHSystem {
                     System.out.println("[!] Error: Employee ID not found.");
                 }
             } else {
-                System.out.println("[!] Invalid Username. Please use 'admin' or 'employee'.");
+                System.out.println("[!] Invalid Username. Please use 'payroll_staff' or 'employee'.");
             }
         }
     }
